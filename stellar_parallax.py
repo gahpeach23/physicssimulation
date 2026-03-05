@@ -58,15 +58,20 @@ while True:
     sun_x = 200
     sun_y = 260
 
+    name = stars[current_star][0]
+    parallax = stars[current_star][2]
+
     #orbit
     pygame.draw.circle(screen,(60,60,60),(sun_x, sun_y), 110, 1)
     pygame.draw.circle(screen,(255, 220,0),(sun_x,sun_y),15)
     label = font.render("sun",True,(255,220,0))
+
     screen.blit(label,(sun_x-10, sun_y+20))
     earth_x = int(sun_x + 110 * math.cos(earth_ang))
     earth_y = int(sun_y + 110 * math.sin(earth_ang))
     pygame.draw.circle(screen,(0, 100, 255),(earth_x, earth_y), 10)
     label_2 = font.render("earth", True, (100, 150, 255))
+
     screen.blit(label_2, (earth_x +10, earth_y -5))
     months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
     mindex = int(earth_ang / (2 * math.pi) * 12)%12
@@ -80,6 +85,30 @@ while True:
 
     #line earth to star
     pygame.draw.line(screen,(100,100,100),(earth_x,earth_y),(410,sun_y),1)
+    
+    #divider
+    pygame.draw.line(screen,(50,50,50),(450,0),(450,550),1)
+    screen.blit(font.render("solar system view",True,(100,100,100)),(10,10))
+
+    screen.blit(font.render("sky view",True,(100,100,100)),(460,10))
+
+    sky_cx = 680
+    sky_cy = 250
+
+    #how much star shifts (proxima is max shift)
+    shift = (parallax / 0.7687) * 120*math.cos(earth_ang)
+    star_x = int(sky_cx + shift)
+    
+    #target 
+    pygame.draw.circle(screen,(255,50,50),(star_x,sky_cy),5)
+    screen.blit(font.render(name,True,(255,50,50)),(star_x-20, sky_cy-20))
+
+    #center line
+    pygame.draw.line(screen,(50,50,50),(sky_cx,100),(sky_cx,420),1)
+    pygame.draw.line(screen,(255,200,0),(sky_cx,sky_cy+35),(star_x,sky_cy+35),2)
+    shift_label = f"shift = {abs(shift):.1f} px"
+    screen.blit(font.render(shift_label, True, (255,200,0)),
+                (int((sky_cx + star_x) / 2) - 30, sky_cy + 40))
     
     name = stars[current_star][0]
     label = font.render("star: " + name, True, (255, 255, 255))

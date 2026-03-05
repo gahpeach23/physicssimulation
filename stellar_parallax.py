@@ -26,16 +26,61 @@ stars = [
 ]
 
 current_star = 0
+earth_ang=0
+paused = False
 
-# just testing that it works
+# siwtch through the stars
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                pygame.quit()
+                sys.exit()
+            if event.key == pygame.K_SPACE:
+                paused = not paused
+            if event.key == pygame.K_RIGHT:
+                current_star = current_star + 1
+                if current_star >= len(stars):
+                    current_star = 0
+            if event.key == pygame.K_LEFT:
+                current_star = current_star - 1
+                if current_star < 0:
+                    current_star = len(stars) - 1
+    if not paused:
+        earth_ang = earth_ang + 0.02
+        if earth_ang >= 2 * math.pi:
+            earth_ang = earth_ang - 2 * math.pi
+    
     screen.fill((0, 0, 0))
+    sun_x = 200
+    sun_y = 260
 
+    #orbit
+    pygame.draw.circle(screen,(60,60,60),(sun_x, sun_y), 110, 1)
+    pygame.draw.circle(screen,(255, 220,0),(sun_x,sun_y),15)
+    label = font.render("sun",True,(255,220,0))
+    screen.blit(label,(sun_x-10, sun_y+20))
+    earth_x = int(sun_x + 110 * math.cos(earth_ang))
+    earth_y = int(sun_y + 110 * math.sin(earth_ang))
+    pygame.draw.circle(screen,(0, 100, 255),(earth_x, earth_y), 10)
+    label_2 = font.render("earth", True, (100, 150, 255))
+    screen.blit(label_2, (earth_x +10, earth_y -5))
+    months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    mindex = int(earth_ang / (2 * math.pi) * 12)%12
+    month_label = font.render(months[mindex], True, (100, 150, 255))
+    screen.blit(month_label, (earth_x - 10, earth_y -20))
+
+    #other view
+    pygame.draw.circle(screen, (255,50,50),(410,sun_y),5)
+    label_3 = font.render(stars[current_star][0], True, (255, 50, 50))
+    screen.blit(label_3, (410, sun_y - 10))
+
+    #line earth to star
+    pygame.draw.line(screen,(100,100,100),(earth_x,earth_y),(410,sun_y),1)
+    
     name = stars[current_star][0]
     label = font.render("star: " + name, True, (255, 255, 255))
     screen.blit(label, (10, 10))

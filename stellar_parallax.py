@@ -60,6 +60,7 @@ while True:
 
     name = stars[current_star][0]
     parallax = stars[current_star][2]
+    distance = stars[current_star][1]
 
     #orbit
     pygame.draw.circle(screen,(60,60,60),(sun_x, sun_y), 110, 1)
@@ -110,6 +111,17 @@ while True:
     screen.blit(font.render(shift_label, True, (255,200,0)),
                 (int((sky_cx + star_x) / 2) - 30, sky_cy + 40))
     
+    pygame.draw.line(screen, (50, 50, 50), (0, 470), (900, 470), 1)
+
+    parsecs = distance / 3.26156
+
+    screen.blit(font.render(f"Star: {name}   ({current_star + 1}/{len(stars)})    left and right arrows change", True, (200, 200, 200)), (10, 478))
+    screen.blit(font.render(f"Distance: {distance} ly = {parsecs:.4f} parsecs     Parallax: {parallax}\"", True, (200, 200, 200)), (10, 498))
+    screen.blit(font.render(f"d = 1/p = 1/{parallax} = {parsecs:.4f} pc      SPACE = pause    ESC = quit", True, (100, 200, 100)), (10, 518))
+
+    if paused:
+        screen.blit(font.render("PAUSED", True, (255, 80, 80)), (820, 478))
+
     name = stars[current_star][0]
     label = font.render("star: " + name, True, (255, 255, 255))
     screen.blit(label, (10, 10))
